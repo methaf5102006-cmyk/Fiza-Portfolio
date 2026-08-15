@@ -608,21 +608,20 @@ document.querySelectorAll('.pcard').forEach(card=>{
   card.addEventListener('mouseleave', ()=>{ card.style.transform=''; });
 });
 
-/* --- AI Assistant (connected to real Claude API backend) --- */
+/* --- AI Assistant (connected to real Claude API backend via Netlify Functions) --- */
 
-// ⚠️ IMPORTANT: replace this with your deployed backend URL after following server/README.md
-// Local testing example: "http://localhost:3001/api/chat"
-// Production example: "https://fiza-ai-backend.onrender.com/api/chat"
-const AI_BACKEND_URL = "https://YOUR-BACKEND-URL.onrender.com/api/chat";
+// This calls the Netlify Function at netlify/functions/chat.js
+// It's a relative path, so it automatically works on whatever domain the site is deployed to.
+const AI_BACKEND_URL = "/.netlify/functions/chat";
 
 const KB_FALLBACK = {
   skills: "Fiza works across the full MERN stack — React.js, Node.js, Express.js and MongoDB — plus Tailwind CSS, REST APIs, AI integration, WordPress/WooCommerce, and technical documentation (SRS, UML, ERD, DFD, PowerPoint).",
   projects: "Fiza has built SkillLink (a hyperlocal skill marketplace), an LMS with AI integration, and is finishing a college website. She's also built static sites, a WordPress store, and a client portfolio.",
-  ai: "Fiza integrates AI-powered features directly into MERN applications. This chat widget itself is an example — once the backend is connected, it runs on the real Claude API.",
+  ai: "Fiza integrates AI-powered features directly into MERN applications. This chat widget itself is an example — it runs on the real Claude API through a Netlify Function.",
   contact: "You can reach Fiza at liaqatfiza9@gmail.com, on WhatsApp at +92 321 1963000, or via LinkedIn and GitHub linked in the Contact section.",
   hire: "Fiza is open to freelance projects, junior developer roles, and documentation work. Email or WhatsApp is the fastest way to reach her.",
   greeting: "Hi! I'm Fiza's AI Assistant. Ask me about her skills, projects, AI work, education, or how to contact her.",
-  offline: "I'm not connected to my AI backend yet — Fiza still needs to deploy the server and set AI_BACKEND_URL in the code. In the meantime: ask about her skills, projects, or contact info and I'll do my best."
+  offline: "I'm having trouble reaching my AI backend right now. In the meantime: ask about her skills, projects, or contact info and I'll do my best."
 };
 function matchFallback(q){
   q = q.toLowerCase();
@@ -662,12 +661,6 @@ function showTyping(){
 async function getAIReply(userText){
   const typing = showTyping();
   try {
-    if (AI_BACKEND_URL.includes("YOUR-BACKEND-URL")) {
-      // backend not deployed/connected yet — use offline fallback
-      await new Promise(r => setTimeout(r, 500));
-      typing.remove();
-      return matchFallback(userText);
-    }
     const res = await fetch(AI_BACKEND_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

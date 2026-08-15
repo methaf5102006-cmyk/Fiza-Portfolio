@@ -1,15 +1,7 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-const PORT = process.env.PORT || 3001;
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
 
-app.use(cors()); // in production, restrict this to your Netlify domain — see README
-app.use(express.json());
-
-// Simple in-memory rate limiter (per IP) so one visitor can't spam your API key/budget
+// Simple in-memory rate limiter (per IP). Note: on serverless this resets
+// whenever the function "cold starts" — it's a basic safety net, not a hard limit.
 const rateLimitMap = new Map();
 const RATE_LIMIT = 20; // max messages
 const RATE_WINDOW_MS = 10 * 60 * 1000; // per 10 minutes
@@ -58,23 +50,45 @@ FACTS ABOUT FIZA:
 Never invent projects, employers, numbers, or facts not listed above. If unsure, say you don't have that
 detail and suggest the visitor email Fiza directly.`;
 
-app.post('/api/chat', async (req, res) => {
+exports.handler = async (event) => {
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS'
+  };
+
+  // Handle CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
+
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed.' }) };
+  }
+
   try {
     if (!ANTHROPIC_API_KEY) {
-      return res.status(500).json({ error: 'Server is missing ANTHROPIC_API_KEY. See README.' });
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY. Check Netlify environment variables.' })
+      };
     }
 
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const ip = event.headers['x-forwarded-for'] || event.headers['client-ip'] || 'unknown';
     if (isRateLimited(ip)) {
-      return res.status(429).json({ error: 'Too many messages — please try again in a few minutes.' });
+      return {
+        statusCode: 429,
+        headers,
+        body: JSON.stringify({ error: 'Too many messages — please try again in a few minutes.' })
+      };
     }
 
-    const { message, history } = req.body;
+    const { message, history } = JSON.parse(event.body || '{}');
     if (!message || typeof message !== 'string' || message.length > 800) {
-      return res.status(400).json({ error: 'Invalid message.' });
+      return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid message.' }) };
     }
 
-    // history: array of {role: 'user'|'assistant', content: string}, sent from the frontend
     const messages = Array.isArray(history) ? history.slice(-8) : [];
     messages.push({ role: 'user', content: message });
 
@@ -96,7 +110,7 @@ app.post('/api/chat', async (req, res) => {
     if (!response.ok) {
       const errText = await response.text();
       console.error('Anthropic API error:', response.status, errText);
-      return res.status(502).json({ error: 'AI service error. Please try again shortly.' });
+      return { statusCode: 502, headers, body: JSON.stringify({ error: 'AI service error. Please try again shortly.' }) };
     }
 
     const data = await response.json();
@@ -106,15 +120,13 @@ app.post('/api/chat', async (req, res) => {
       .join('\n')
       .trim();
 
-    res.json({ reply: reply || "Sorry, I couldn't generate a response — please try again." });
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ reply: reply || "Sorry, I couldn't generate a response — please try again." })
+    };
   } catch (err) {
-    console.error('Chat endpoint error:', err);
-    res.status(500).json({ error: 'Something went wrong on the server.' });
+    console.error('Chat function error:', err);
+    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Something went wrong on the server.' }) };
   }
-});
-
-app.get('/health', (req, res) => res.json({ status: 'ok' }));
-
-app.listen(PORT, () => {
-  console.log(`AI backend running on port ${PORT}`);
-});
+};
