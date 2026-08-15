@@ -1,0 +1,120 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
+app.use(cors()); // in production, restrict this to your Netlify domain — see README
+app.use(express.json());
+
+// Simple in-memory rate limiter (per IP) so one visitor can't spam your API key/budget
+const rateLimitMap = new Map();
+const RATE_LIMIT = 20; // max messages
+const RATE_WINDOW_MS = 10 * 60 * 1000; // per 10 minutes
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip) || { count: 0, start: now };
+  if (now - entry.start > RATE_WINDOW_MS) {
+    entry.count = 0;
+    entry.start = now;
+  }
+  entry.count += 1;
+  rateLimitMap.set(ip, entry);
+  return entry.count > RATE_LIMIT;
+}
+
+// Everything the assistant is allowed to know about Fiza.
+// Edit this freely — the model will only answer using what's written here.
+const SYSTEM_PROMPT = `You are the AI Assistant embedded in Fiza Liaqat's developer portfolio website.
+You answer visitor questions ONLY about Fiza, using the facts below. Keep answers short (2-4 sentences),
+friendly, and professional. If asked something outside these facts (unrelated topics, other people, etc.),
+politely say you can only answer questions about Fiza's portfolio and steer back to her work.
+
+FACTS ABOUT FIZA:
+- Name: Fiza Liaqat
+- Role: MERN Stack Developer (React.js, Node.js, Express.js, MongoDB), BS Information Technology student
+- Education: BS Information Technology, Elite College (affiliated with GCUF), 2024–2028
+- Core skills: HTML5, CSS3, JavaScript, React.js, Tailwind CSS, Node.js, Express.js, MongoDB, REST APIs,
+  AI integration, WordPress/WooCommerce, Git & GitHub
+- Documentation skills: SRS, Synopsis, UML Diagrams, ERD, DFD, Thesis Setup, PowerPoint Presentations,
+  Word document formatting (CVs, question papers)
+- Projects:
+  1. SkillLink — a hyperlocal skill marketplace connecting people who need a service with nearby providers.
+     Built with React, Node.js, Express, MongoDB, JWT authentication.
+  2. LMS with AI Integration — a learning management system with AI-driven features for learners.
+     Built with React, Node.js, MongoDB, AI integration.
+  3. College Website — an institutional website (departments, admissions, announcements), currently in
+     final stages of development.
+  Static / other work: AI Tool Hub, Luxury Cars website, Gaming website (static builds), Skyline Watches
+  (WordPress/WooCommerce e-commerce store), Click On Web (client portfolio project).
+- Services offered: MERN Stack Development, Frontend Development, AI Integration, Technical Documentation.
+- Availability: Open to freelance projects, junior developer roles, and documentation work.
+- Contact: Email liaqatfiza9@gmail.com | WhatsApp/Phone +92 321 1963000 | LinkedIn linkedin.com/in/fiza-liaqat-6259563a3
+  | GitHub github.com/methaf5102006-cmyk | Location: Pakistan
+
+Never invent projects, employers, numbers, or facts not listed above. If unsure, say you don't have that
+detail and suggest the visitor email Fiza directly.`;
+
+app.post('/api/chat', async (req, res) => {
+  try {
+    if (!ANTHROPIC_API_KEY) {
+      return res.status(500).json({ error: 'Server is missing ANTHROPIC_API_KEY. See README.' });
+    }
+
+    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    if (isRateLimited(ip)) {
+      return res.status(429).json({ error: 'Too many messages — please try again in a few minutes.' });
+    }
+
+    const { message, history } = req.body;
+    if (!message || typeof message !== 'string' || message.length > 800) {
+      return res.status(400).json({ error: 'Invalid message.' });
+    }
+
+    // history: array of {role: 'user'|'assistant', content: string}, sent from the frontend
+    const messages = Array.isArray(history) ? history.slice(-8) : [];
+    messages.push({ role: 'user', content: message });
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 300,
+        system: SYSTEM_PROMPT,
+        messages
+      })
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error('Anthropic API error:', response.status, errText);
+      return res.status(502).json({ error: 'AI service error. Please try again shortly.' });
+    }
+
+    const data = await response.json();
+    const reply = (data.content || [])
+      .filter(block => block.type === 'text')
+      .map(block => block.text)
+      .join('\n')
+      .trim();
+
+    res.json({ reply: reply || "Sorry, I couldn't generate a response — please try again." });
+  } catch (err) {
+    console.error('Chat endpoint error:', err);
+    res.status(500).json({ error: 'Something went wrong on the server.' });
+  }
+});
+
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
+app.listen(PORT, () => {
+  console.log(`AI backend running on port ${PORT}`);
+});

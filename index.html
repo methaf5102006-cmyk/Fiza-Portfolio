@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiza Liaqat — MERN Stack Developer & AI Integration</title>
+<meta name="description" content="Fiza Liaqat — MERN Stack Developer building full-stack apps with AI integration, plus professional software documentation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#08080F;
+  --bg-2:#0D0D18;
+  --glass:rgba(255,255,255,0.045);
+  --glass-strong:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.09);
+  --border-strong:rgba(255,255,255,0.18);
+  --violet:#8B5CF6;
+  --cyan:#22D3EE;
+  --pink:#F472B6;
+  --text:#F4F4FA;
+  --muted:#9CA0B4;
+  --dim:#5B6178;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;
+  overflow-x:hidden;line-height:1.6;position:relative;
+}
+::selection{background:var(--violet);color:#fff;}
+a{color:inherit;text-decoration:none;}
+h1,h2,h3,h4{font-family:'Sora',sans-serif;letter-spacing:-0.02em;}
+.mono{font-family:'JetBrains Mono',monospace;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;}
+
+/* ---- background aurora ---- */
+.aurora{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.35;}
+.orb1{width:520px;height:520px;background:var(--violet);top:-140px;left:-100px;animation:float1 22s ease-in-out infinite;}
+.orb2{width:460px;height:460px;background:var(--cyan);top:20%;right:-160px;animation:float2 26s ease-in-out infinite;}
+.orb3{width:380px;height:380px;background:var(--pink);bottom:-120px;left:30%;animation:float3 20s ease-in-out infinite;opacity:0.22;}
+@keyframes float1{0%,100%{transform:translate(0,0);}50%{transform:translate(60px,80px);}}
+@keyframes float2{0%,100%{transform:translate(0,0);}50%{transform:translate(-70px,50px);}}
+@keyframes float3{0%,100%{transform:translate(0,0);}50%{transform:translate(50px,-60px);}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.cursor-glow{position:fixed;width:420px;height:420px;border-radius:50%;pointer-events:none;z-index:2;
+  background:radial-gradient(circle,rgba(139,92,246,0.10),transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity .3s;left:0;top:0;}
+
+.scroll-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--violet),var(--cyan));z-index:200;width:0%;}
+
+/* ---- nav ---- */
+.navbar{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:100;width:calc(100% - 40px);max-width:900px;}
+.nav-pill{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(13,13,24,0.7);backdrop-filter:blur(20px);
+  border:1px solid var(--border);border-radius:100px;
+  padding:10px 10px 10px 22px;
+}
+.logo{font-family:'Sora',sans-serif;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px;}
+.logo .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--cyan));}
+.nav-links{display:flex;gap:4px;list-style:none;}
+.nav-links a{font-size:13px;color:var(--muted);padding:9px 15px;border-radius:100px;transition:all .25s;}
+.nav-links a:hover{color:var(--text);background:var(--glass-strong);}
+.nav-cta{font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 20px;border-radius:100px;
+  background:linear-gradient(135deg,var(--violet),var(--cyan));color:#08080F;font-weight:600;transition:transform .25s, box-shadow .25s;}
+.nav-cta:hover{transform:scale(1.04);box-shadow:0 0 24px rgba(139,92,246,0.5);}
+.menu-btn{display:none;background:none;border:none;color:var(--text);font-size:20px;cursor:pointer;padding:8px;}
+
+/* ---- hero ---- */
+.hero{min-height:100vh;display:flex;align-items:center;padding:140px 0 60px;position:relative;z-index:5;}
+.hero-inner{display:grid;grid-template-columns:1.15fr 0.85fr;gap:50px;align-items:center;}
+.badge-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);
+  border:1px solid rgba(34,211,238,0.3);background:rgba(34,211,238,0.06);
+  padding:7px 16px;border-radius:100px;margin-bottom:24px;
+}
+.badge-pill .pulse{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:pulse 1.6s infinite;}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(34,211,238,.5);}50%{opacity:.5;box-shadow:0 0 0 5px rgba(34,211,238,0);}}
+.hero h1{font-size:clamp(38px,5.4vw,68px);line-height:1.03;font-weight:800;margin-bottom:20px;}
+.grad-text{background:linear-gradient(135deg,var(--violet),var(--cyan) 60%,var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 200%;animation:gradShift 6s ease infinite;}
+@keyframes gradShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+.hero-role{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--muted);margin-bottom:22px;min-height:24px;}
+.hero-role .cur{display:inline-block;width:2px;height:16px;background:var(--cyan);margin-left:3px;vertical-align:middle;animation:blink 1s infinite;}
+@keyframes blink{50%{opacity:0;}}
+.hero p.desc{color:var(--muted);font-size:16.5px;max-width:520px;margin-bottom:34px;}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:50px;}
+.btn{font-family:'JetBrains Mono',monospace;font-size:13px;padding:15px 26px;border-radius:12px;display:inline-flex;align-items:center;gap:10px;transition:all .25s;cursor:pointer;border:1px solid transparent;}
+.btn-primary{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#08080F;font-weight:600;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(139,92,246,0.35);}
+.btn-glass{background:var(--glass);border-color:var(--border-strong);color:var(--text);backdrop-filter:blur(10px);}
+.btn-glass:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-3px);}
+
+.mini-stats{display:flex;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.mstat{flex:1;background:rgba(13,13,24,0.5);backdrop-filter:blur(10px);padding:18px 14px;text-align:center;}
+.mstat .n{font-family:'Sora',sans-serif;font-weight:700;font-size:22px;background:linear-gradient(135deg,var(--violet),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.mstat .l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;}
+
+/* hero bento float cards */
+.hero-visual{position:relative;height:480px;}
+.float-card{
+  position:absolute;background:var(--glass);border:1px solid var(--border);border-radius:18px;
+  backdrop-filter:blur(16px);padding:20px;animation:floaty 6s ease-in-out infinite;
+}
+.float-card h4{font-size:14px;margin-bottom:4px;}
+.float-card p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);}
+.fc1{top:0;left:10%;width:230px;animation-delay:0s;border-color:rgba(139,92,246,0.35);}
+.fc1 .dotrow{display:flex;gap:5px;margin-bottom:12px;}
+.fc1 .dotrow span{width:8px;height:8px;border-radius:50%;background:var(--border-strong);}
+.fc2{top:38%;right:0;width:210px;animation-delay:1.2s;border-color:rgba(34,211,238,0.35);}
+.fc3{bottom:2%;left:16%;width:220px;animation-delay:2.4s;border-color:rgba(244,114,182,0.35);}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-16px);}}
+.ai-tag{display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--pink);background:rgba(244,114,182,0.1);padding:4px 9px;border-radius:100px;margin-bottom:10px;}
+
+/* ---- sections ---- */
+section{padding:130px 0;position:relative;z-index:5;}
+.section-head{max-width:640px;margin-bottom:60px;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--cyan);}
+.section-head h2{font-size:clamp(28px,3.6vw,42px);font-weight:700;}
+.section-head p{color:var(--muted);margin-top:14px;font-size:16px;}
+
+.glass-panel{background:var(--glass);border:1px solid var(--border);border-radius:22px;backdrop-filter:blur(16px);}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:44px;align-items:start;}
+.about-grid .glass-panel{padding:38px;}
+.about-grid p{color:var(--muted);margin-bottom:16px;font-size:16px;}
+.about-grid strong{color:var(--text);font-weight:600;}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+.chip{font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:7px 12px;border-radius:100px;border:1px solid var(--border-strong);color:var(--muted);transition:all .2s;}
+.chip:hover{border-color:var(--violet);color:var(--violet);}
+.bento-side{display:grid;gap:16px;}
+.bento-card{padding:24px;border-radius:18px;}
+.bento-card .bicon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;margin-bottom:14px;background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(34,211,238,.25));color:var(--text);}
+.bento-card h4{font-size:15.5px;margin-bottom:6px;}
+.bento-card p{color:var(--muted);font-size:13px;}
+
+/* skills marquee */
+.marquee-wrap{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);}
+.marquee{display:flex;gap:14px;width:max-content;animation:scrollLeft 34s linear infinite;padding:6px 0;}
+.marquee2{animation:scrollRight 30s linear infinite;}
+@keyframes scrollLeft{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes scrollRight{from{transform:translateX(-50%);}to{transform:translateX(0);}}
+.skill-pill{font-family:'JetBrains Mono',monospace;font-size:14px;padding:14px 22px;border-radius:14px;background:var(--glass);border:1px solid var(--border);white-space:nowrap;display:flex;align-items:center;gap:10px;}
+.skill-pill b{color:var(--cyan);font-weight:600;font-size:12px;}
+.marquee-row{margin-bottom:16px;}
+
+/* services bento */
+.services-bento{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+.services-bento .glass-panel{padding:28px 24px;transition:transform .3s, border-color .3s;}
+.services-bento .glass-panel:hover{transform:translateY(-6px);border-color:var(--border-strong);}
+.services-bento .sicon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;margin-bottom:18px;}
+.si-1{background:rgba(139,92,246,.18);color:var(--violet);}
+.si-2{background:rgba(34,211,238,.18);color:var(--cyan);}
+.si-3{background:rgba(244,114,182,.18);color:var(--pink);}
+.si-4{background:rgba(139,92,246,.18);color:var(--violet);}
+.services-bento h4{font-size:16px;margin-bottom:8px;}
+.services-bento p{color:var(--muted);font-size:13.5px;}
+
+/* projects */
+.project-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.pcard{padding:32px;border-radius:22px;position:relative;overflow:hidden;transition:transform .35s ease, border-color .35s;}
+.pcard:hover{transform:translateY(-6px);border-color:var(--border-strong);}
+.pcard::before{content:"";position:absolute;top:0;left:0;right:0;height:100px;
+  background:radial-gradient(circle at 30% 0%,rgba(139,92,246,.18),transparent 70%);pointer-events:none;}
+.pcard.full{grid-column:span 2;}
+.ptop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:8px;flex-wrap:wrap;}
+.pcard h3{font-size:21px;}
+.badge{font-family:'JetBrains Mono',monospace;font-size:10.5px;padding:4px 11px;border-radius:100px;text-transform:uppercase;letter-spacing:.04em;}
+.badge.done{background:rgba(34,211,238,.15);color:var(--cyan);}
+.badge.wip{background:rgba(244,114,182,.15);color:var(--pink);}
+.ptag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);margin-bottom:14px;}
+.pcard p.pdesc{color:var(--muted);font-size:14.5px;margin-bottom:18px;}
+.pcard .chip-row{margin-top:0;margin-bottom:20px;}
+.plinks{display:flex;gap:12px;flex-wrap:wrap;}
+.plinks a{font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 18px;border-radius:10px;border:1px solid var(--border-strong);transition:all .2s;}
+.plinks a:hover{border-color:var(--cyan);color:var(--cyan);}
+
+.static-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:20px;}
+.static-chip{padding:18px 14px;border-radius:14px;text-align:center;}
+.static-chip h5{font-size:12.5px;margin-bottom:4px;}
+.static-chip span{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--dim);}
+
+/* timeline */
+.timeline{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.tl-col .tl-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;margin-bottom:20px;padding:0 32px;}
+.tl-item{padding:26px 32px;border-radius:20px;position:relative;}
+.tl-item h4{font-size:17px;margin-bottom:4px;}
+.tl-item .org{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted);margin-bottom:4px;}
+.tl-item .date{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);margin-bottom:12px;}
+.tl-item p{color:var(--muted);font-size:14px;}
+
+/* contact */
+.contact-panel{padding:56px;position:relative;overflow:hidden;border-radius:28px;}
+.contact-panel::before{content:"";position:absolute;top:-40%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(139,92,246,.25),transparent 70%);pointer-events:none;}
+.contact-grid2{display:grid;grid-template-columns:1fr 1fr;gap:40px;position:relative;z-index:2;}
+.contact-panel h2{font-size:clamp(26px,3.4vw,36px);margin-bottom:14px;}
+.contact-panel p.lead{color:var(--muted);margin-bottom:30px;max-width:400px;}
+.cinfo-row{display:flex;gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--border);}
+.cinfo-row:first-child{border-top:none;}
+.cinfo-icon{width:36px;height:36px;border-radius:10px;background:var(--glass-strong);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;flex-shrink:0;}
+.cinfo-label{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;}
+.cinfo-val{font-size:14.5px;transition:color .2s;}
+a.cinfo-val:hover{color:var(--cyan);}
+.contact-right{display:flex;flex-direction:column;justify-content:center;gap:20px;}
+.social-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.social-grid a{padding:16px;border-radius:14px;background:var(--glass-strong);border:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;transition:all .25s;}
+.social-grid a:hover{transform:translateY(-4px);border-color:var(--cyan);color:var(--cyan);}
+
+footer{padding:40px 0;position:relative;z-index:5;border-top:1px solid var(--border);}
+.footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-row p{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--dim);}
+
+/* AI assistant widget */
+.ai-fab{
+  position:fixed;bottom:28px;right:28px;z-index:150;
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--violet),var(--cyan));
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 8px 30px rgba(139,92,246,0.45);
+  border:none;transition:transform .25s;
+}
+.ai-fab:hover{transform:scale(1.08);}
+.ai-fab svg{width:26px;height:26px;}
+.ai-fab .ring{position:absolute;inset:-6px;border-radius:50%;border:1.5px solid rgba(139,92,246,.5);animation:ringPulse 2.4s ease-out infinite;}
+@keyframes ringPulse{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.35);opacity:0;}}
+
+.ai-panel{
+  position:fixed;bottom:100px;right:28px;z-index:150;
+  width:360px;max-width:calc(100vw - 40px);height:480px;max-height:calc(100vh - 140px);
+  background:rgba(13,13,24,0.92);backdrop-filter:blur(24px);
+  border:1px solid var(--border-strong);border-radius:20px;
+  display:flex;flex-direction:column;overflow:hidden;
+  opacity:0;transform:translateY(20px) scale(.97);pointer-events:none;transition:all .3s ease;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.ai-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.ai-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.ai-head .ai-dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.ai-head h4{font-size:14px;}
+.ai-head span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);}
+.ai-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:12px;}
+.ai-body::-webkit-scrollbar{width:5px;}
+.ai-body::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:10px;}
+.ai-msg{font-size:13.5px;padding:11px 14px;border-radius:14px;max-width:85%;line-height:1.5;}
+.ai-msg.bot{background:var(--glass-strong);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px;}
+.ai-msg.user{background:linear-gradient(135deg,var(--violet),var(--cyan));color:#08080F;align-self:flex-end;border-bottom-right-radius:4px;font-weight:500;}
+.ai-suggest{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 12px;}
+.ai-suggest button{font-family:'JetBrains Mono',monospace;font-size:11px;padding:7px 12px;border-radius:100px;background:var(--glass);border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;}
+.ai-suggest button:hover{border-color:var(--cyan);color:var(--cyan);}
+.ai-input-row{display:flex;gap:8px;padding:14px;border-top:1px solid var(--border);}
+.ai-input-row input{flex:1;background:var(--glass-strong);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Inter',sans-serif;font-size:13px;}
+.ai-input-row input:focus{outline:none;border-color:var(--violet);}
+.ai-input-row button{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--violet),var(--cyan));border:none;color:#08080F;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.typing{display:flex;gap:4px;padding:4px 0;}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:typingBounce 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1);}
+.reveal.in{opacity:1;transform:translateY(0);}
+.reveal-stagger.in .stagger-item{opacity:1;transform:translateY(0);}
+.stagger-item{opacity:0;transform:translateY(20px);transition:opacity .6s ease, transform .6s ease;}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important;}}
+
+@media (max-width:960px){
+  .hero-inner{grid-template-columns:1fr;}
+  .hero-visual{height:340px;order:-1;}
+  .about-grid{grid-template-columns:1fr;}
+  .services-bento{grid-template-columns:repeat(2,1fr);}
+  .project-grid{grid-template-columns:1fr;}
+  .pcard.full{grid-column:span 1;}
+  .static-strip{grid-template-columns:repeat(3,1fr);}
+  .timeline{grid-template-columns:1fr;}
+  .contact-grid2{grid-template-columns:1fr;}
+  .ai-panel{width:calc(100vw - 32px);right:16px;}
+  .ai-fab{right:16px;}
+}
+@media (max-width:720px){
+  .nav-links{display:none;}
+  .menu-btn{display:block;}
+  .nav-cta{display:none;}
+  .services-bento{grid-template-columns:1fr;}
+  .static-strip{grid-template-columns:repeat(2,1fr);}
+  .mini-stats{flex-wrap:wrap;}
+}
+</style>
+</head>
+<body>
+
+<div class="aurora"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="grain"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<header class="navbar">
+  <div class="nav-pill">
+    <a href="#home" class="logo"><span class="dot"></span>Fiza Liaqat</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="resume/resume.pdf" class="nav-cta">Resume ↓</a>
+  </div>
+</header>
+
+<main id="home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <div>
+        <div class="badge-pill reveal"><span class="pulse"></span>Available for freelance & junior roles</div>
+        <h1 class="reveal">Full-stack apps.<br><span class="grad-text">AI-powered.</span> Documented.</h1>
+        <div class="hero-role reveal">&gt; <span id="typed"></span><span class="cur"></span></div>
+        <p class="desc reveal">I'm Fiza Liaqat, a BS IT student and MERN Stack Developer. I build complete web applications with React, Node.js and MongoDB, integrate AI features into them, and write the technical documentation that explains how they work.</p>
+        <div class="hero-actions reveal">
+          <a href="#projects" class="btn btn-primary">View Projects →</a>
+          <a href="#contact" class="btn btn-glass">Get In Touch</a>
+        </div>
+        <div class="mini-stats reveal">
+          <div class="mstat"><div class="n">03</div><div class="l">Projects</div></div>
+          <div class="mstat"><div class="n">15+</div><div class="l">Tech Stack</div></div>
+          <div class="mstat"><div class="n">AI</div><div class="l">Integrated</div></div>
+          <div class="mstat"><div class="n">∞</div><div class="l">Learning</div></div>
+        </div>
+      </div>
+
+      <div class="hero-visual reveal">
+        <div class="float-card fc1">
+          <div class="dotrow"><span></span><span></span><span></span></div>
+          <h4>MERN Stack</h4>
+          <p>React · Node · Express · MongoDB</p>
+        </div>
+        <div class="float-card fc2">
+          <div class="ai-tag">● Live</div>
+          <h4>AI Integration</h4>
+          <p>Smart features in web apps</p>
+        </div>
+        <div class="float-card fc3">
+          <h4>Documentation</h4>
+          <p>SRS · UML · ERD · DFD</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">01 — About</div>
+        <h2>The developer who also writes the docs.</h2>
+      </div>
+      <div class="about-grid">
+        <div class="glass-panel reveal">
+          <p><strong>Who is Fiza?</strong><br>I'm a BS Information Technology student specializing in the MERN Stack — MongoDB, Express.js, React.js and Node.js. I build complete applications and integrate <strong>AI-powered features</strong> into them, from smart recommendations to conversational assistants.</p>
+          <p>Beyond code, I write professional software documentation: SRS, UML, ERD, DFD, final year project reports and presentation-ready slides. I also build on WordPress — including a full e-commerce store — and take on formatting work like CVs, question papers and decks.</p>
+          <div class="chip-row">
+            <span class="chip">MERN Development</span><span class="chip">AI Integration</span><span class="chip">REST APIs</span><span class="chip">Documentation</span><span class="chip">WordPress</span><span class="chip">Responsive Design</span>
+          </div>
+        </div>
+        <div class="bento-side reveal">
+          <div class="glass-panel bento-card"><div class="bicon">M</div><h4>MERN Stack Developer</h4><p>Full-stack apps with React, Node, Express & MongoDB.</p></div>
+          <div class="glass-panel bento-card"><div class="bicon">AI</div><h4>AI Integration</h4><p>Embedding intelligent features into real products.</p></div>
+          <div class="glass-panel bento-card"><div class="bicon">BS</div><h4>BS Information Technology</h4><p>Elite College, affiliated with GCUF · 2024 – 2028.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">02 — Skills</div>
+        <h2>Tools I build with</h2>
+        <p>From frontend interfaces to AI-integrated backends and the documentation that ties it together.</p>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="marquee-row marquee-wrap">
+        <div class="marquee">
+          <span class="skill-pill"><b>●</b>HTML5</span><span class="skill-pill"><b>●</b>CSS3</span><span class="skill-pill"><b>●</b>JavaScript</span><span class="skill-pill"><b>●</b>React.js</span><span class="skill-pill"><b>●</b>Tailwind CSS</span><span class="skill-pill"><b>●</b>Node.js</span><span class="skill-pill"><b>●</b>Express.js</span>
+          <span class="skill-pill"><b>●</b>HTML5</span><span class="skill-pill"><b>●</b>CSS3</span><span class="skill-pill"><b>●</b>JavaScript</span><span class="skill-pill"><b>●</b>React.js</span><span class="skill-pill"><b>●</b>Tailwind CSS</span><span class="skill-pill"><b>●</b>Node.js</span><span class="skill-pill"><b>●</b>Express.js</span>
+        </div>
+      </div>
+      <div class="marquee-row marquee-wrap">
+        <div class="marquee marquee2">
+          <span class="skill-pill"><b>●</b>MongoDB</span><span class="skill-pill"><b>●</b>REST APIs</span><span class="skill-pill"><b>●</b>AI Integration</span><span class="skill-pill"><b>●</b>WordPress</span><span class="skill-pill"><b>●</b>SRS Docs</span><span class="skill-pill"><b>●</b>UML / ERD / DFD</span><span class="skill-pill"><b>●</b>PowerPoint</span>
+          <span class="skill-pill"><b>●</b>MongoDB</span><span class="skill-pill"><b>●</b>REST APIs</span><span class="skill-pill"><b>●</b>AI Integration</span><span class="skill-pill"><b>●</b>WordPress</span><span class="skill-pill"><b>●</b>SRS Docs</span><span class="skill-pill"><b>●</b>UML / ERD / DFD</span><span class="skill-pill"><b>●</b>PowerPoint</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">03 — Services</div>
+        <h2>What I can build for you</h2>
+      </div>
+      <div class="services-bento reveal-stagger">
+        <div class="glass-panel stagger-item"><div class="sicon si-1">M</div><h4>MERN Development</h4><p>Complete full-stack apps with MongoDB, Express, React & Node.</p></div>
+        <div class="glass-panel stagger-item"><div class="sicon si-2">Fe</div><h4>Frontend Development</h4><p>Responsive interfaces with React.js and Tailwind CSS.</p></div>
+        <div class="glass-panel stagger-item"><div class="sicon si-3">AI</div><h4>AI Integration</h4><p>Smart search, recommendations & chat features in your app.</p></div>
+        <div class="glass-panel stagger-item"><div class="sicon si-4">Dc</div><h4>Documentation</h4><p>SRS, UML, ERD, DFD, FYP reports & presentations.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">04 — Projects</div>
+        <h2>Selected work</h2>
+      </div>
+      <div class="project-grid reveal-stagger">
+        <div class="glass-panel pcard full stagger-item">
+          <div class="ptop"><h3>SkillLink</h3><span class="badge done">MERN Stack</span></div>
+          <div class="ptag">Hyperlocal Skill Marketplace</div>
+          <p class="pdesc">Connects people who need a service with skilled providers nearby — secure auth, listings, bookings and profiles.</p>
+          <div class="chip-row"><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">MongoDB</span><span class="chip">JWT Auth</span></div>
+          <div class="plinks"><a href="https://github.com/methaf5102006-cmyk" target="_blank" rel="noopener">GitHub</a><a href="#contact">Request Demo</a></div>
+        </div>
+        <div class="glass-panel pcard stagger-item">
+          <div class="ptop"><h3>LMS + AI</h3><span class="badge done">AI Integrated</span></div>
+          <div class="ptag">Learning Management System</div>
+          <p class="pdesc">Course & progress tracking, enhanced with AI-driven features for learners.</p>
+          <div class="chip-row"><span class="chip">React</span><span class="chip">AI Integration</span></div>
+          <div class="plinks"><a href="https://github.com/methaf5102006-cmyk" target="_blank" rel="noopener">GitHub</a></div>
+        </div>
+        <div class="glass-panel pcard stagger-item">
+          <div class="ptop"><h3>College Website</h3><span class="badge wip">In Progress</span></div>
+          <div class="ptag">Institutional Website</div>
+          <p class="pdesc">Departments, admissions and announcements — nearing completion.</p>
+          <div class="chip-row"><span class="chip">React</span><span class="chip">Node.js</span></div>
+          <div class="plinks"><a href="#contact">Ask for Status</a></div>
+        </div>
+      </div>
+
+      <div class="static-strip reveal-stagger">
+        <div class="glass-panel static-chip stagger-item"><h5>AI Tool Hub</h5><span>STATIC</span></div>
+        <div class="glass-panel static-chip stagger-item"><h5>Luxury Cars</h5><span>STATIC</span></div>
+        <div class="glass-panel static-chip stagger-item"><h5>Gaming Site</h5><span>STATIC</span></div>
+        <div class="glass-panel static-chip stagger-item"><h5>Skyline Watches</h5><span>WOOCOMMERCE</span></div>
+        <div class="glass-panel static-chip stagger-item"><h5>Click On Web</h5><span>CLIENT</span></div>
+        <div class="glass-panel static-chip stagger-item"><h5>College Sites</h5><span>MULTIPLE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">05 — Education & Experience</div>
+        <h2>Background</h2>
+      </div>
+      <div class="timeline reveal">
+        <div class="tl-col">
+          <div class="tl-label">Education</div>
+          <div class="glass-panel tl-item">
+            <h4>BS Information Technology</h4>
+            <div class="org">Elite College (Affiliated with GCUF)</div>
+            <div class="date">2024 – 2028</div>
+            <p>Focused on full-stack web development, AI integration and software documentation.</p>
+          </div>
+        </div>
+        <div class="tl-col">
+          <div class="tl-label">Experience</div>
+          <div class="glass-panel tl-item">
+            <h4>MERN Stack Developer</h4>
+            <div class="org">Freelance & Academic Projects</div>
+            <div class="date">2023 – Present</div>
+            <p>Building MERN projects with AI integration, WordPress client work, and FYP documentation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="glass-panel contact-panel reveal">
+        <div class="contact-grid2">
+          <div>
+            <div class="eyebrow">06 — Contact</div>
+            <h2>Let's build something.</h2>
+            <p class="lead">Available for freelance projects, junior developer roles, and documentation work.</p>
+            <div class="cinfo-row"><div class="cinfo-icon">✉</div><div><div class="cinfo-label">Email</div><a href="mailto:liaqatfiza9@gmail.com" class="cinfo-val">liaqatfiza9@gmail.com</a></div></div>
+            <div class="cinfo-row"><div class="cinfo-icon">☎</div><div><div class="cinfo-label">Phone / WhatsApp</div><a href="https://wa.me/923211963000" target="_blank" rel="noopener" class="cinfo-val">+92 321 1963000</a></div></div>
+            <div class="cinfo-row"><div class="cinfo-icon">◈</div><div><div class="cinfo-label">Location</div><div class="cinfo-val">Pakistan</div></div></div>
+            <div class="cinfo-row"><div class="cinfo-icon">Li</div><div><div class="cinfo-label">LinkedIn</div><a href="https://www.linkedin.com/in/fiza-liaqat-6259563a3/" target="_blank" rel="noopener" class="cinfo-val">fiza-liaqat-6259563a3</a></div></div>
+            <div class="cinfo-row"><div class="cinfo-icon">Gh</div><div><div class="cinfo-label">GitHub</div><a href="https://github.com/methaf5102006-cmyk" target="_blank" rel="noopener" class="cinfo-val">methaf5102006-cmyk</a></div></div>
+          </div>
+          <div class="contact-right">
+            <a href="mailto:liaqatfiza9@gmail.com" class="btn btn-primary" style="justify-content:center;">Send Email ✉</a>
+            <div class="social-grid">
+              <a href="https://www.linkedin.com/in/fiza-liaqat-6259563a3/" target="_blank" rel="noopener">LinkedIn</a>
+              <a href="https://github.com/methaf5102006-cmyk" target="_blank" rel="noopener">GitHub</a>
+              <a href="https://www.instagram.com/webd_eveloper10/" target="_blank" rel="noopener">Instagram</a>
+              <a href="https://www.tiktok.com/@codewithfiza1029" target="_blank" rel="noopener">TikTok</a>
+              <a href="https://web.facebook.com/profile.php?id=61571455135638" target="_blank" rel="noopener">Facebook</a>
+              <a href="https://wa.me/923211963000" target="_blank" rel="noopener">WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <p>© 2026 FIZA LIAQAT — MERN STACK DEVELOPER</p>
+    <p>PAKISTAN</p>
+  </div>
+</footer>
+
+<!-- AI ASSISTANT -->
+<button class="ai-fab" id="aiFab" aria-label="Open AI Assistant">
+  <div class="ring"></div>
+  <svg viewBox="0 0 24 24" fill="none" stroke="#08080F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v1h1a3 3 0 0 1 3 3v1h.5a1.5 1.5 0 0 1 0 3H18v2a3 3 0 0 1-3 3h-1v1a2 2 0 0 1-4 0v-1H9a3 3 0 0 1-3-3v-2h-.5a1.5 1.5 0 0 1 0-3H6V8a3 3 0 0 1 3-3h1V4a2 2 0 0 1 2-2Z"/><circle cx="9" cy="12" r="1" fill="#08080F"/><circle cx="15" cy="12" r="1" fill="#08080F"/></svg>
+</button>
+
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-head">
+    <span class="ai-dot"></span>
+    <div><h4>Fiza's AI Assistant</h4><span>Ask about skills, projects, or contact</span></div>
+  </div>
+  <div class="ai-body" id="aiBody"></div>
+  <div class="ai-suggest" id="aiSuggest">
+    <button data-q="skills">Skills?</button>
+    <button data-q="projects">Projects?</button>
+    <button data-q="ai">AI integration?</button>
+    <button data-q="contact">Contact info?</button>
+    <button data-q="hire">How to hire?</button>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" id="aiInput" placeholder="Ask something about Fiza..." autocomplete="off">
+    <button id="aiSend" aria-label="Send">→</button>
+  </div>
+</div>
+
+<script>
+/* cursor glow */
+const glow = document.getElementById('cursorGlow');
+window.addEventListener('mousemove', e=>{
+  glow.style.left = e.clientX+'px'; glow.style.top = e.clientY+'px';
+});
+
+/* scroll progress */
+const progress = document.getElementById('scrollProgress');
+window.addEventListener('scroll', ()=>{
+  const h = document.documentElement;
+  const pct = (h.scrollTop)/(h.scrollHeight - h.clientHeight) * 100;
+  progress.style.width = pct + '%';
+});
+
+/* typing effect */
+const roles = ["MERN Stack Developer", "AI Integration Specialist", "Frontend & Backend Engineer", "Technical Documentation Writer", "WordPress Developer"];
+let ri=0, ci=0, deleting=false;
+const typedEl = document.getElementById('typed');
+function tick(){
+  const cur = roles[ri];
+  if(!deleting){ ci++; typedEl.textContent = cur.slice(0,ci); if(ci===cur.length){ deleting=true; setTimeout(tick,1300); return; } }
+  else{ ci--; typedEl.textContent = cur.slice(0,ci); if(ci===0){ deleting=false; ri=(ri+1)%roles.length; } }
+  setTimeout(tick, deleting?30:60);
+}
+tick();
+
+/* reveal on scroll */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:0.12});
+document.querySelectorAll('.reveal, .reveal-stagger').forEach(el=>io.observe(el));
+
+/* stagger children delay */
+document.querySelectorAll('.reveal-stagger').forEach(group=>{
+  group.querySelectorAll('.stagger-item').forEach((item,i)=>{
+    item.style.transitionDelay = (i*0.08)+'s';
+  });
+});
+
+/* tilt effect on project cards */
+document.querySelectorAll('.pcard').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - 0.5;
+    const y = (e.clientY - r.top)/r.height - 0.5;
+    card.style.transform = `translateY(-6px) rotateX(${y*-4}deg) rotateY(${x*4}deg)`;
+  });
+  card.addEventListener('mouseleave', ()=>{ card.style.transform=''; });
+});
+
+/* --- AI Assistant (connected to real Claude API backend) --- */
+
+// ⚠️ IMPORTANT: replace this with your deployed backend URL after following server/README.md
+// Local testing example: "http://localhost:3001/api/chat"
+// Production example: "https://fiza-ai-backend.onrender.com/api/chat"
+const AI_BACKEND_URL = "https://YOUR-BACKEND-URL.onrender.com/api/chat";
+
+const KB_FALLBACK = {
+  skills: "Fiza works across the full MERN stack — React.js, Node.js, Express.js and MongoDB — plus Tailwind CSS, REST APIs, AI integration, WordPress/WooCommerce, and technical documentation (SRS, UML, ERD, DFD, PowerPoint).",
+  projects: "Fiza has built SkillLink (a hyperlocal skill marketplace), an LMS with AI integration, and is finishing a college website. She's also built static sites, a WordPress store, and a client portfolio.",
+  ai: "Fiza integrates AI-powered features directly into MERN applications. This chat widget itself is an example — once the backend is connected, it runs on the real Claude API.",
+  contact: "You can reach Fiza at liaqatfiza9@gmail.com, on WhatsApp at +92 321 1963000, or via LinkedIn and GitHub linked in the Contact section.",
+  hire: "Fiza is open to freelance projects, junior developer roles, and documentation work. Email or WhatsApp is the fastest way to reach her.",
+  greeting: "Hi! I'm Fiza's AI Assistant. Ask me about her skills, projects, AI work, education, or how to contact her.",
+  offline: "I'm not connected to my AI backend yet — Fiza still needs to deploy the server and set AI_BACKEND_URL in the code. In the meantime: ask about her skills, projects, or contact info and I'll do my best."
+};
+function matchFallback(q){
+  q = q.toLowerCase();
+  if(/skill|tech|stack|tool/.test(q)) return KB_FALLBACK.skills;
+  if(/project|work|built|portfolio/.test(q)) return KB_FALLBACK.projects;
+  if(/\bai\b|artificial intelligence|integrat/.test(q)) return KB_FALLBACK.ai;
+  if(/contact|email|phone|whatsapp|reach|linkedin|github/.test(q)) return KB_FALLBACK.contact;
+  if(/hire|freelance|job|available/.test(q)) return KB_FALLBACK.hire;
+  if(/hi|hello|hey|assalam/.test(q)) return KB_FALLBACK.greeting;
+  return KB_FALLBACK.offline;
+}
+
+const aiFab = document.getElementById('aiFab');
+const aiPanel = document.getElementById('aiPanel');
+const aiBody = document.getElementById('aiBody');
+const aiInput = document.getElementById('aiInput');
+const aiSend = document.getElementById('aiSend');
+let aiOpened = false;
+let chatHistory = []; // {role:'user'|'assistant', content:string}
+
+function addMsg(text, cls){
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + cls;
+  div.textContent = text;
+  aiBody.appendChild(div);
+  aiBody.scrollTop = aiBody.scrollHeight;
+}
+function showTyping(){
+  const typing = document.createElement('div');
+  typing.className = 'ai-msg bot typing';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  aiBody.appendChild(typing);
+  aiBody.scrollTop = aiBody.scrollHeight;
+  return typing;
+}
+
+async function getAIReply(userText){
+  const typing = showTyping();
+  try {
+    if (AI_BACKEND_URL.includes("YOUR-BACKEND-URL")) {
+      // backend not deployed/connected yet — use offline fallback
+      await new Promise(r => setTimeout(r, 500));
+      typing.remove();
+      return matchFallback(userText);
+    }
+    const res = await fetch(AI_BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userText, history: chatHistory })
+    });
+    const data = await res.json();
+    typing.remove();
+    if (!res.ok) {
+      return data.error || "Sorry, something went wrong reaching the AI backend.";
+    }
+    return data.reply;
+  } catch (err) {
+    typing.remove();
+    return matchFallback(userText);
+  }
+}
+
+aiFab.addEventListener('click', ()=>{
+  aiPanel.classList.toggle('open');
+  if(!aiOpened){
+    aiOpened = true;
+    addMsg(KB_FALLBACK.greeting, 'bot');
+  }
+});
+document.getElementById('aiSuggest').addEventListener('click', async (e)=>{
+  if(e.target.tagName==='BUTTON'){
+    const text = e.target.textContent;
+    addMsg(text, 'user');
+    chatHistory.push({role:'user', content:text});
+    const reply = await getAIReply(text);
+    addMsg(reply, 'bot');
+    chatHistory.push({role:'assistant', content:reply});
+  }
+});
+async function sendMsg(){
+  const val = aiInput.value.trim();
+  if(!val) return;
+  addMsg(val, 'user');
+  chatHistory.push({role:'user', content:val});
+  aiInput.value = '';
+  const reply = await getAIReply(val);
+  addMsg(reply, 'bot');
+  chatHistory.push({role:'assistant', content:reply});
+}
+aiSend.addEventListener('click', sendMsg);
+aiInput.addEventListener('keydown', e=>{ if(e.key==='Enter') sendMsg(); });
+</script>
+
+</body>
+</html>
