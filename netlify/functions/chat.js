@@ -1,4 +1,4 @@
-const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 // Simple in-memory rate limiter (per IP). Note: on serverless this resets
 // whenever the function "cold starts" — it's a basic safety net, not a hard limit.
@@ -67,11 +67,11 @@ exports.handler = async (event) => {
   }
 
   try {
-    if (!ANTHROPIC_API_KEY) {
+    if (!GROQ_API_KEY) {
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY. Check Netlify environment variables.' })
+        body: JSON.stringify({ error: 'Server is missing GROQ_API_KEY. Check Netlify environment variables.' })
       };
     }
 
@@ -89,36 +89,35 @@ exports.handler = async (event) => {
       return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid message.' }) };
     }
 
-    const messages = Array.isArray(history) ? history.slice(-8) : [];
-    messages.push({ role: 'user', content: message });
+    // Groq uses the OpenAI-style "messages" array, with system as its own message
+    const history_msgs = Array.isArray(history) ? history.slice(-8) : [];
+    const messages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...history_msgs,
+      { role: 'user', content: message }
+    ];
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
+        'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
+        model: 'llama-3.3-70b-versatile',
         max_tokens: 300,
-        system: SYSTEM_PROMPT,
         messages
       })
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('Anthropic API error:', response.status, errText);
+      console.error('Groq API error:', response.status, errText);
       return { statusCode: 502, headers, body: JSON.stringify({ error: 'AI service error. Please try again shortly.' }) };
     }
 
     const data = await response.json();
-    const reply = (data.content || [])
-      .filter(block => block.type === 'text')
-      .map(block => block.text)
-      .join('\n')
-      .trim();
+    const reply = data.choices?.[0]?.message?.content?.trim();
 
     return {
       statusCode: 200,
