@@ -104,7 +104,10 @@ exports.handler = async (event) => {
         'Authorization': `Bearer ${GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        // NOTE: 'llama-3.3-70b-versatile' was deprecated by Groq on 17 June 2026.
+        // Using their recommended replacement below. If Groq changes this again,
+        // check https://console.groq.com/docs/deprecations for the current model id.
+        model: 'openai/gpt-oss-120b',
         max_tokens: 300,
         messages
       })
